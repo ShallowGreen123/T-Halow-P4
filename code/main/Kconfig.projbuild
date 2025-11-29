@@ -1,0 +1,16 @@
+menu "Example Configuration"
+
+    choice
+        prompt "Select the example to build"
+        default EXAMPLE_BUILD_SDIO_TX_AH_R900PNR_SPEED_TEST
+            config EXAMPLE_BUILD_SDIO_TX_AH_R900PNR
+                bool "sdio_tx_ah_r900pnr"
+            config EXAMPLE_BUILD_SDIO_TX_AH_R900PNR_SPEED_TEST
+                bool "sdio_tx_ah_r900pnr_speed_test"
+            config EXAMPLE_BUILD_SPI_TX_AH_R900PNR
+                bool "spi_tx_ah_r900pnr"
+            config EXAMPLE_BUILD_SPI_TX_AH_R900PNR_SPEED_TEST
+                bool "spi_tx_ah_r900pnr_speed_test"
+    endchoice
+
+endmenu
