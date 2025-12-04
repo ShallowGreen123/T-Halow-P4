@@ -1,0 +1,15 @@
+dependencies:
+  cmake_utilities: 0.*
+  idf: '>=5.0'
+  lvgl/lvgl:
+    public: true
+    version: '>=8.3,<9'
+description: This package is a UI runtime framework based on LVGL, designed to provide
+  a consistent UI development experience for screens of various sizes and shapes.
+issues: https://github.com/espressif/esp-ui/issues
+repository: git://github.com/espressif/esp-ui.git
+repository_info:
+  commit_sha: f0a88297784a7f5bde88d172afe5fbc557fb84cb
+  path: .
+url: https://github.com/espressif/esp-ui
+version: 0.2.1
