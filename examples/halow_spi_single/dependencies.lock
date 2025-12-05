@@ -1,0 +1,32 @@
+dependencies:
+  cpp_bus_driver:
+    dependencies:
+    - name: idf
+      version: '>=5.4'
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\cpp_bus_driver
+      type: local
+    version: 1.1.1
+  halow_huge_ic_nonos_driver:
+    dependencies: []
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\halow_huge_ic_nonos_driver
+      type: local
+    version: '*'
+  idf:
+    source:
+      type: idf
+    version: 5.4.0
+  private_library:
+    dependencies: []
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\private_library
+      type: local
+    version: '*'
+direct_dependencies:
+- cpp_bus_driver
+- halow_huge_ic_nonos_driver
+- private_library
+manifest_hash: 98213b72b224ebbe01d504eb0dabf2b628a49e4266d074be1793570cb714ab8a
+target: esp32p4
+version: 2.0.0
