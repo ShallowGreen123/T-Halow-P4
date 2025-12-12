@@ -33,6 +33,9 @@
 
 #else
 
+#define I2C_SDA 7
+#define I2C_SCL 8
+
 // spi
 #define SPI_1_SCLK 43
 #define SPI_1_MOSI 44
@@ -88,6 +91,9 @@
 
 #define PIN_BOOT GPIO_NUM_35
 
+// Camera
+#define CAMERA_SDA IIC_SDA
+#define CAMERA_SCL IIC_SCL
 
 #endif
 

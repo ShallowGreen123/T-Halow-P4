@@ -1,0 +1,118 @@
+dependencies:
+  cpp_bus_driver:
+    dependencies:
+    - name: idf
+      version: '>=5.4'
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\cpp_bus_driver
+      type: local
+    version: 1.1.1
+  esp_video:
+    dependencies:
+    - name: espressif/cmake_utilities
+      version: 0.*
+    - name: espressif/esp_cam_sensor
+      version: 1.0.*
+    - name: espressif/esp_h264
+      version: 1.0.4
+    - name: espressif/esp_ipa
+      version: 0.3.*
+    - name: idf
+      version: '>=5.4'
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\esp_video
+      type: local
+    targets:
+    - esp32p4
+    version: 0.9.1
+  espressif/cmake_utilities:
+    component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.1'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.5.3
+  espressif/esp_cam_sensor:
+    component_hash: f5873378a3a547e46e831736cbbbaf519a80fdd4ac24e5e5bcd00122d587c3d0
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: espressif/esp_sccb_intf
+      registry_url: https://components.espressif.com
+      require: private
+      version: '>=0.0.2'
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32p4
+    version: 1.0.0
+  espressif/esp_h264:
+    component_hash: fa5daaebc8a304f0b79bc57e51aab43e0a03eabc2ba3865bff4063c56b5d4564
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.4
+  espressif/esp_ipa:
+    component_hash: 854ba797f5cd5a49b739e2126287683605ed68f474a3a931b32d56dee2353d59
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>=5.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32p4
+    version: 0.3.0~1
+  espressif/esp_sccb_intf:
+    component_hash: 8345dc8ec72c38716f86bb439394aa3e6ae5b773078365016b009b3dba4549a8
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    version: 0.0.6
+  idf:
+    source:
+      type: idf
+    version: 5.4.1
+  lvgl/lvgl:
+    component_hash: b702d642e03e95928046d5c6726558e6444e112420c77efa5fdb6650b0a13c5d
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 9.3.0
+  private_library:
+    dependencies: []
+    source:
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\private_library
+      type: local
+    version: '*'
+direct_dependencies:
+- cpp_bus_driver
+- esp_video
+- lvgl/lvgl
+- private_library
+manifest_hash: 7f1eb627b96d883a844c62321756a2a2f3423e7b361a69fb8e2f2064d7349ee4
+target: esp32p4
+version: 2.0.0
