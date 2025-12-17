@@ -275,7 +275,10 @@ static lv_display_t *bsp_display_lcd_init(const bsp_display_cfg_t *cfg)
             .sw_rotate = cfg->flags.sw_rotate, /* Only SW rotation is supported for 90° and 270° */
         }};
 
-    return lvgl_port_add_disp_dsi(&disp_cfg, NULL);
+    const lvgl_port_display_dsi_cfg_t disp_dsi_cfg = {
+        .flags.avoid_tearing = false,
+    };
+    return lvgl_port_add_disp_dsi(&disp_cfg, &disp_dsi_cfg);
 }
 
 static lv_indev_t *bsp_display_indev_init(void)
