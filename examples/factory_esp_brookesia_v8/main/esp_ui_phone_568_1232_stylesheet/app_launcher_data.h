@@ -14,7 +14,7 @@ extern "C" {
 #define ESP_BROOKESIA_PHONE_568_1232_DARK_APP_LAUNCHER_ICON_DATA()       \
     {                                                             \
         .main = {                                                 \
-            .size = ESP_BROOKESIA_STYLE_SIZE_SQUARE(200),                \
+            .size = ESP_BROOKESIA_STYLE_SIZE_SQUARE(150),          \
             .layout_row_pad = 10,                                 \
         },                                                        \
         .image = {                                                \
