@@ -13,22 +13,21 @@
 #include "lvgl.h"
 #include "lv_demos.h"
 #include "lv_examples.h"
-
 // esp32p4_board
 #include "esp-bsp.h"
 #include "display.h"
-
+#include "t_halow_p4_board.h"
 // esp_brookesia
 #include "esp_brookesia.hpp"
 #include "esp_brookesia_phone_568_1232_stylesheet.h"
-
 #include "app_examples/phone/simple_conf/src/phone_app_simple_conf.hpp"
 #include "app_examples/phone/complex_conf/src/phone_app_complex_conf.hpp"
 #include "app_examples/phone/squareline/src/phone_app_squareline.hpp"
-
+// esp_brookesia app
 #include "apps.h"
 
-#define EXAMPLE_SHOW_MEM_INFO             (1)
+// -------------------------------------------------------------------
+#define EXAMPLE_SHOW_MEM_INFO             (0)
 
 static char * TAG = "app_main";
 
@@ -55,6 +54,8 @@ extern "C" void app_main(void)
     lv_indev_t *indev = bsp_display_indev_init();
 
     // bsp_display_backlight_on();  // AMOLED no backlight
+
+    // halow_spi_test();
 
     bsp_display_lock(0);
 
@@ -121,20 +122,6 @@ extern "C" void app_main(void)
     PhoneAppComplexConf *app_complex_conf = new PhoneAppComplexConf();
     ESP_BROOKESIA_CHECK_NULL_EXIT(app_complex_conf, "Create app complex conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_complex_conf) >= 0), "Install app complex conf failed");
-
-    // PhoneAppSimpleConf *app_simple_conf1 = new PhoneAppSimpleConf();
-    // ESP_BROOKESIA_CHECK_NULL_EXIT(app_simple_conf1, "Create app simple conf failed");
-    // ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_simple_conf1) >= 0), "Install app simple conf failed");
-    // PhoneAppComplexConf *app_complex_conf1 = new PhoneAppComplexConf();
-    // ESP_BROOKESIA_CHECK_NULL_EXIT(app_complex_conf1, "Create app complex conf failed");
-    // ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_complex_conf1) >= 0), "Install app complex conf failed");
-
-    // PhoneAppSimpleConf *app_simple_conf2 = new PhoneAppSimpleConf();
-    // ESP_BROOKESIA_CHECK_NULL_EXIT(app_simple_conf2, "Create app simple conf failed");
-    // ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_simple_conf2) >= 0), "Install app simple conf failed");
-    // PhoneAppComplexConf *app_complex_conf2 = new PhoneAppComplexConf();
-    // ESP_BROOKESIA_CHECK_NULL_EXIT(app_complex_conf2, "Create app complex conf failed");
-    // ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_complex_conf2) >= 0), "Install app complex conf failed");
 
     /* Create a timer to update the clock */
     lv_timer_create(on_clock_update_timer_cb, 1000, phone);

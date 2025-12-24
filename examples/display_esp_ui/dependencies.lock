@@ -1,56 +1,16 @@
 dependencies:
-  esp32p4_board:
-    dependencies:
-    - name: espressif/esp_lvgl_port
-      public: true
-      version: ^2
-    - name: idf
-      version: '>=5.3'
-    - name: lvgl/lvgl
-      version: '>=8,<9'
-    - name: esp_amoled_rm69a10
-      path: ../esp_amoled_rm69a10
-      version: '*'
-    - name: esp_lcd_touch_gt9895
-      path: ../esp_lcd_touch_gt9895
-      version: '*'
-    source:
-      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\esp32p4_board
-      type: local
-    targets:
-    - esp32p4
-    version: 1.0.0
   esp_amoled_rm69a10:
     dependencies: []
     source:
-      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\esp_amoled_rm69a10
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\examples\display_esp_ui\components\esp_amoled_rm69a10
       type: local
     version: '*'
   esp_lcd_touch_gt9895:
-    dependencies:
-    - name: espressif/esp_lcd_touch
-      public: true
-      version: ^1.1.0
-    - name: idf
-      version: '>=4.4.2'
+    dependencies: []
     source:
-      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\esp_lcd_touch_gt9895
+      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\examples\display_esp_ui\components\esp_lcd_touch_gt9895
       type: local
     version: 1.1.1
-  esp_ui_phone_568_1232_stylesheet:
-    dependencies:
-    - name: espressif/cmake_utilities
-      version: 0.*
-    - name: espressif/esp-ui
-      public: true
-      version: 0.2.*
-    - name: lvgl/lvgl
-      public: true
-      version: '>=8.3,<9'
-    source:
-      path: D:\dgx\code\0_lilygo\T-Halow-P4-V0.2\common_components\esp_ui_phone_568_1232_stylesheet
-      type: local
-    version: 0.2.0
   espressif/cmake_utilities:
     component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
     dependencies:
@@ -58,7 +18,7 @@ dependencies:
       require: private
       version: '>=4.1'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 0.5.3
   espressif/esp-ui:
@@ -80,7 +40,7 @@ dependencies:
       type: service
     version: 0.2.1
   espressif/esp_lcd_touch:
-    component_hash: cf4741f4903bdfe83c0a6606cb33314957e78605398954154f247e03acfd306b
+    component_hash: 3f85a7d95af876f1a6ecca8eb90a81614890d0f03a038390804e5a77e2caf862
     dependencies:
     - name: idf
       require: private
@@ -88,7 +48,7 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.2.0
+    version: 1.2.1
   espressif/esp_lvgl_port:
     component_hash: f872401524cb645ee6ff1c9242d44fb4ddcfd4d37d7be8b9ed3f4e85a404efcd
     dependencies:
@@ -115,14 +75,14 @@ dependencies:
       type: service
     version: 8.4.0
 direct_dependencies:
-- esp32p4_board
 - esp_amoled_rm69a10
 - esp_lcd_touch_gt9895
-- esp_ui_phone_568_1232_stylesheet
+- espressif/cmake_utilities
 - espressif/esp-ui
+- espressif/esp_lcd_touch
 - espressif/esp_lvgl_port
 - idf
 - lvgl/lvgl
-manifest_hash: 00893a15e281ce1484094c29376de6d7768a820327303ae481eddd8f1a6a241a
+manifest_hash: 42f85b830e808a179973907437648c15d2e587fe45723df97f31bdec0f2272ee
 target: esp32p4
 version: 2.0.0

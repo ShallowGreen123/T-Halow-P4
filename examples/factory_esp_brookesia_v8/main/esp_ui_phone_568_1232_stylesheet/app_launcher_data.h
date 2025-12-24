@@ -34,7 +34,7 @@ extern "C" {
             .size = ESP_BROOKESIA_STYLE_SIZE_RECT_PERCENT(100, 100),               \
         },                                                                  \
         .table = {                                                          \
-            .default_num = 3,                                               \
+            .default_num = 2,                                               \
             .size = ESP_BROOKESIA_STYLE_SIZE_RECT_W_PERCENT(100, 495),                \
         },                                                                  \
         .indicator = {                                                      \

@@ -6,13 +6,5 @@ dependencies:
 
   lvgl/lvgl: ">=8.3.10,<9"
 
-  espressif/esp_lvgl_port: "2.3.1"
+  espressif/esp_lvgl_port: "^2.3.1"
   
-  esp_amoled_rm69a10:
-    path: "../../../common_components/esp_amoled_rm69a10"
-
-  esp_lcd_touch_gt9895:
-    path: "../../../common_components/esp_lcd_touch_gt9895"
-
-  esp32p4_board:
-    path: "../../../common_components/esp32p4_board"
