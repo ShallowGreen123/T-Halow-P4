@@ -232,7 +232,7 @@ static void lvgl_port_touchpad_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *
     if (bsp_touchpad_read_point(&last_x, &last_y, 1) > 0)
     {
 
-        ESP_LOGI(TAG, "touch x=%d, y=%d", data->point.x, data->point.y);
+        ESP_LOGD(TAG, "touch x=%d, y=%d", data->point.x, data->point.y);
         data->state = LV_INDEV_STATE_PR;
     }
     else

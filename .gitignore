@@ -1,2 +1,9 @@
 build
 managed_components
+AH-V1.6-SDK/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+.vscode
+
+其他/

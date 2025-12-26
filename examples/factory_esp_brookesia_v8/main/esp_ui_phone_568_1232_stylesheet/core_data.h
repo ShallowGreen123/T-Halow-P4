@@ -61,7 +61,7 @@ extern "C" {
 #define ESP_BROOKESIA_PHONE_568_1232_DARK_CORE_MANAGER_DATA() \
     {                                                  \
         .app = {                                       \
-            .max_running_num = 1,                      \
+            .max_running_num = 2,                      \
         },                                             \
         .flags = {                                     \
             .enable_app_save_snapshot = 1,             \

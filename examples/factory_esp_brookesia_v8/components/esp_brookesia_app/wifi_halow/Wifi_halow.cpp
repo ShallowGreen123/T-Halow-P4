@@ -5,6 +5,7 @@
  */
 #include "Wifi_halow.hpp"
 #include "esp_log.h"
+#include "t_halow_p4_board.h"
 
 using namespace std;
 
@@ -24,12 +25,13 @@ WIFI_halow::WIFI_halow():
 
 WIFI_halow::~WIFI_halow()
 {
-    ESP_BROOKESIA_LOGD("Destroy(@0x%p)", this);
+    ESP_BROOKESIA_LOGI("Destroy(@0x%p)", this);
 }
 
 bool WIFI_halow::run(void)
 {
-    ESP_BROOKESIA_LOGD("Run");
+    // this->_core.
+    ESP_BROOKESIA_LOGI("Run");
 
     // Create all UI resources here
     // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
@@ -39,12 +41,14 @@ bool WIFI_halow::run(void)
     lv_obj_center(label);
     lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
 
+    halow_spi_test();
+
     return true;
 }
 
 bool WIFI_halow::back(void)
 {
-    ESP_BROOKESIA_LOGD("Back");
+    ESP_BROOKESIA_LOGI("Back");
 
     // If the app needs to exit, call notifyCoreClosed() to notify the core to close the app
     ESP_BROOKESIA_CHECK_FALSE_RETURN(notifyCoreClosed(), false, "Notify core closed failed");
