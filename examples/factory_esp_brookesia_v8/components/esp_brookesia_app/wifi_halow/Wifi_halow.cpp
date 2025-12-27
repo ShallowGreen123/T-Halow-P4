@@ -7,6 +7,10 @@
 #include "esp_log.h"
 #include "t_halow_p4_board.h"
 
+#include "ui/ui.h"
+#include "esp_brookesia_versions.h"
+
+
 using namespace std;
 
 LV_IMG_DECLARE(img_wifi_halow);
@@ -14,12 +18,12 @@ LV_IMG_DECLARE(img_wifi_halow);
 #define APP_NAME                "WIFI Halow"
 
 WIFI_halow::WIFI_halow(bool use_status_bar, bool use_navigation_bar):
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, true, use_status_bar, use_navigation_bar)
+    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false, use_status_bar, use_navigation_bar)
 {
 }
 
 WIFI_halow::WIFI_halow():
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, true)
+    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false)
 {
 }
 
@@ -33,15 +37,17 @@ bool WIFI_halow::run(void)
     // this->_core.
     ESP_BROOKESIA_LOGI("Run");
 
-    // Create all UI resources here
-    // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
-    lv_obj_t *label = lv_label_create(lv_scr_act());
-    ESP_BROOKESIA_CHECK_NULL_RETURN(label, false, "Create label failed");
-    lv_label_set_text(label, "To be added ...");
-    lv_obj_center(label);
-    lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
+    // // Create all UI resources here
+    // // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
+    // lv_obj_t *label = lv_label_create(lv_scr_act());
+    // ESP_BROOKESIA_CHECK_NULL_RETURN(label, false, "Create label failed");
+    // lv_label_set_text(label, "To be added ...");
+    // lv_obj_center(label);
+    // lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
 
-    halow_spi_test();
+    // halow_spi_test();
+
+    ui_halow_init();
 
     return true;
 }

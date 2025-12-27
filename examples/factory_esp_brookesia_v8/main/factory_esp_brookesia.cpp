@@ -139,12 +139,12 @@ extern "C" void app_main(void)
         internal_total = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
         external_free = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
         external_total = heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
-        // sprintf(buffer, "   Biggest /     Free /    Total\n"
-        //         "\t  SRAM : [%8d / %8d / %8d]\n"
-        //         "\t PSRAM : [%8d / %8d / %8d]",
-        //         heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL), internal_free, internal_total,
-        //         heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM), external_free, external_total);
-        // ESP_LOGI("MEM", "%s", buffer);
+        sprintf(buffer, "   Biggest /     Free /    Total\n"
+                "\t  SRAM : [%8d / %8d / %8d]\n"
+                "\t PSRAM : [%8d / %8d / %8d]",
+                heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL), internal_free, internal_total,
+                heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM), external_free, external_total);
+        ESP_LOGI("MEM", "%s", buffer);
 
         /**
          * The `lockLv()` and `unlockLv()` functions are used to lock and unlock the LVGL task.

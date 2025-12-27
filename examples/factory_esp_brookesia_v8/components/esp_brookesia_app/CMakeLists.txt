@@ -2,6 +2,7 @@ set(APPS_DIR ./)
 file(GLOB_RECURSE APPS_C_SRCS ${APPS_DIR}/*.c)
 file(GLOB_RECURSE APPS_CPP_SRCS ${APPS_DIR}/*.cpp)
 
+
 idf_component_register(
     SRCS ${APPS_C_SRCS} ${APPS_CPP_SRCS}
     INCLUDE_DIRS ${APPS_DIR}
@@ -19,8 +20,16 @@ idf_component_register(
 target_compile_options(
     ${COMPONENT_LIB}
     PRIVATE
+    $<$<COMPILE_LANGUAGE:C>:
         -Wno-format
         -Wno-incompatible-pointer-types
         -Wno-int-conversion
-        -Wno-missing-field-initializers
-        -DLV_LVGL_H_INCLUDE_SIMPLE)
+    >
+    $<$<COMPILE_LANGUAGE:CXX>:
+        -Wno-format
+        -Wno-conversion-null
+        -Wno-attributes
+        -Wno-write-strings
+    >
+    -DLV_LVGL_H_INCLUDE_SIMPLE
+)
