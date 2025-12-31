@@ -100,20 +100,24 @@ extern "C" void app_main(void)
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_squareline) >= 0), "Install app squareline failed");
     /* Install calculate apps */
     Calculator *app_calculate = new Calculator(false, true);
-    ESP_BROOKESIA_CHECK_NULL_EXIT(app_calculate, "Create app simple conf failed");
+    ESP_BROOKESIA_CHECK_NULL_EXIT(app_calculate, "Create app calculate conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_calculate) >= 0), "Install app calculate failed");
     /* Install game_2048 apps */
     Game2048 *app_game_2048 = new Game2048(false, true);
-    ESP_BROOKESIA_CHECK_NULL_EXIT(app_game_2048, "Create app simple conf failed");
+    ESP_BROOKESIA_CHECK_NULL_EXIT(app_game_2048, "Create app game_2048 conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_game_2048) >= 0), "Install app game_2048 failed");
     /* Install WIFI_Halow apps */
     WIFI_halow *app_wifi_halow = new WIFI_halow(false, true);
-    ESP_BROOKESIA_CHECK_NULL_EXIT(app_wifi_halow, "Create app simple conf failed");
+    ESP_BROOKESIA_CHECK_NULL_EXIT(app_wifi_halow, "Create app WIFI_Halow conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_wifi_halow) >= 0), "Install app WIFI_Halow failed");
     /* Install Camera apps */
     Camera *app_camera = new Camera(false, true);
-    ESP_BROOKESIA_CHECK_NULL_EXIT(app_camera, "Create app simple conf failed");
-    ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_camera) >= 0), "Install app WIFI_Halow failed");
+    ESP_BROOKESIA_CHECK_NULL_EXIT(app_camera, "Create app Camera conf failed");
+    ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_camera) >= 0), "Install app Camera failed");
+    /* Install setting apps */
+    AppSettings *app_setting = new AppSettings(false, true);
+    ESP_BROOKESIA_CHECK_NULL_EXIT(app_setting, "Create app setting conf failed");
+    ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_setting) >= 0), "Install app setting failed");
 
     PhoneAppSimpleConf *app_simple_conf = new PhoneAppSimpleConf();
     ESP_BROOKESIA_CHECK_NULL_EXIT(app_simple_conf, "Create app simple conf failed");

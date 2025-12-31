@@ -5,20 +5,22 @@
  */
 #include "Camera.hpp"
 #include "esp_log.h"
+#include "ui/ui.h"
 
 using namespace std;
 
 LV_IMG_DECLARE(img_camera);
+LV_IMG_DECLARE(img_app_camera);
 
 #define APP_NAME                "Camera"
 
 Camera::Camera(bool use_status_bar, bool use_navigation_bar):
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_camera, true, use_status_bar, use_navigation_bar)
+    ESP_Brookesia_PhoneApp(APP_NAME, &img_camera, false, use_status_bar, use_navigation_bar)
 {
 }
 
 Camera::Camera():
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_camera, true)
+    ESP_Brookesia_PhoneApp(APP_NAME, &img_camera, false)
 {
 }
 
@@ -31,13 +33,15 @@ bool Camera::run(void)
 {
     ESP_BROOKESIA_LOGD("Run");
 
-    // Create all UI resources here
-    // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
-    lv_obj_t *label = lv_label_create(lv_scr_act());
-    ESP_BROOKESIA_CHECK_NULL_RETURN(label, false, "Create label failed");
-    lv_label_set_text(label, "To be added ...");
-    lv_obj_center(label);
-    lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
+    // // Create all UI resources here
+    // // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
+    // lv_obj_t *label = lv_label_create(lv_scr_act());
+    // ESP_BROOKESIA_CHECK_NULL_RETURN(label, false, "Create label failed");
+    // lv_label_set_text(label, "To be added ...");
+    // lv_obj_center(label);
+    // lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
+
+    ui_camera_init();
 
     return true;
 }
