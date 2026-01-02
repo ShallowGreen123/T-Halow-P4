@@ -13,9 +13,9 @@ public:
 
     bool run(void) override;
     bool back(void) override;
-    // bool close(void) override;
+    bool close(void) override;
 
-    // bool init(void) override;
+    bool init(void) override;
     // bool init(void) override;
 
     // bool pause(void) override;

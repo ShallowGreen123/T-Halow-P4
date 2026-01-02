@@ -6,6 +6,12 @@
  */
 #pragma once
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+#include "freertos/semphr.h"
+#include "freertos/ringbuf.h"
+#include "lvgl.h"
 
 // #define T_HALOW_V1_0
 #define T_HALOW_V0_2
@@ -103,4 +109,16 @@
 ////////////////////////////////////////////////// other define config //////////////////////////////////////////////////
 
 ////////////////////////////////////////////////// other define config //////////////////////////////////////////////////
+
+extern QueueHandle_t lvgl_msg_queue;
+extern  RingbufHandle_t log_rb;
+
+
+extern uint8_t *uart_data_buf;
+extern uint32_t uart_data_len;
+
+void halow_init(void);
 void halow_spi_test(void);
+void halow_echo_suspend(void);
+void halow_echo_resume(void);
+void halow_text_echo(void);

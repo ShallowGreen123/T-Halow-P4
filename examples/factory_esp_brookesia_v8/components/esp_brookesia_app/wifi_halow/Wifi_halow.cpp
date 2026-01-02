@@ -10,20 +10,27 @@
 #include "ui/ui.h"
 #include "esp_brookesia_versions.h"
 
+// #include "esp-bsp.h"
 
 using namespace std;
 
 LV_IMG_DECLARE(img_wifi_halow);
 
-#define APP_NAME                "WIFI Halow"
+#define APP_NAME "WIFI Halow"
 
-WIFI_halow::WIFI_halow(bool use_status_bar, bool use_navigation_bar):
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false, use_status_bar, use_navigation_bar)
+#define LVGL_FLUSH_BUF 1200
+
+static lv_timer_t *halow_timer = NULL;
+
+TaskHandle_t halwo_echo_task111_handle = NULL;
+
+void halow_timer_cb(lv_timer_t *t);
+
+WIFI_halow::WIFI_halow(bool use_status_bar, bool use_navigation_bar) : ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false, use_status_bar, use_navigation_bar)
 {
 }
 
-WIFI_halow::WIFI_halow():
-    ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false)
+WIFI_halow::WIFI_halow() : ESP_Brookesia_PhoneApp(APP_NAME, &img_wifi_halow, false)
 {
 }
 
@@ -37,17 +44,11 @@ bool WIFI_halow::run(void)
     // this->_core.
     ESP_BROOKESIA_LOGI("Run");
 
-    // // Create all UI resources here
-    // // ESP_BROOKESIA_CHECK_FALSE_RETURN(phone_app_simple_conf_main_init(), false, "Main init failed");
-    // lv_obj_t *label = lv_label_create(lv_scr_act());
-    // ESP_BROOKESIA_CHECK_NULL_RETURN(label, false, "Create label failed");
-    // lv_label_set_text(label, "To be added ...");
-    // lv_obj_center(label);
-    // lv_obj_set_style_text_font(label, LV_FONT_DEFAULT, 0);
-
-    // halow_spi_test();
-
     ui_halow_init();
+
+    halow_echo_resume();
+    
+    halow_timer = lv_timer_create(halow_timer_cb, 10, NULL);
 
     return true;
 }
@@ -62,23 +63,62 @@ bool WIFI_halow::back(void)
     return true;
 }
 
-// bool WIFI_halow::close(void)
-// {
-//     ESP_BROOKESIA_LOGD("Close");
+bool WIFI_halow::close(void)
+{
+    ESP_BROOKESIA_LOGI("Close");
 
-//     /* Do some operations here if needed */
+    /* Do some operations here if needed */
+    halow_echo_suspend();
 
-//     return true;
-// }
+    if (halow_timer)
+    {
+        lv_timer_del(halow_timer);
+        halow_timer = NULL;
+    }
+    return true;
+}
 
-// bool WIFI_halow::init()
-// {
-//     ESP_BROOKESIA_LOGD("Init");
+bool WIFI_halow::init()
+{
+    ESP_BROOKESIA_LOGI("Init");
 
-//     /* Do some initialization here if needed */
+    /* Do some initialization here if needed */
 
-//     return true;
-// }
+    halow_init();
+
+    return true;
+}
+
+void halow_timer_cb(lv_timer_t *t)
+{
+    size_t item_size;
+    uint8_t *item;
+    static char merge_buf[LVGL_FLUSH_BUF];
+    static uint32_t text_sun_len = 0;
+    int total = 0;
+
+    while ((item = (uint8_t *)xRingbufferReceiveUpTo(
+                log_rb, &item_size, 0, 128)) != NULL) {
+
+        if (total + item_size >= LVGL_FLUSH_BUF)
+            break;
+
+        memcpy(&merge_buf[total], item, item_size);
+        total += item_size;
+
+        vRingbufferReturnItem(log_rb, item);
+    }
+
+    if (total > 0) {
+        text_sun_len += total;
+        if(text_sun_len > 1000) {
+            text_sun_len = 0;
+            lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, "");
+        }
+        merge_buf[total] = '\0';
+        lv_textarea_add_text(ui_halowSetting_halowDebugTextArea, merge_buf);
+    }
+}
 
 // bool WIFI_halow::deinit()
 // {

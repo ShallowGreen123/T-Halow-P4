@@ -28,7 +28,7 @@ extern lv_obj_t * ui____initial_actions0;
 
 
 
-
+extern lv_obj_t * ui_halowSetting_halowDebugTextArea;
 
 
 

@@ -20,6 +20,8 @@ lv_obj_t * ui_Button4;
 lv_obj_t * ui_Label4;
 lv_obj_t * ui____initial_actions0;
 
+lv_obj_t * ui_halowSetting_halowDebugTextArea;
+
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
     #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"

@@ -27,7 +27,7 @@
 #include "apps.h"
 
 // -------------------------------------------------------------------
-#define EXAMPLE_SHOW_MEM_INFO             (1)
+#define EXAMPLE_SHOW_MEM_INFO             (0)
 
 static char * TAG = "app_main";
 

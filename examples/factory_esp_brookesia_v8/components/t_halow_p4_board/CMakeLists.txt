@@ -5,7 +5,7 @@ idf_component_register(
         INCLUDE_DIRS 
         ${src_dirs}
         REQUIRES
-        "driver" "cpp_bus_driver" "halow_huge_ic_nonos_driver"
+        "driver" "cpp_bus_driver" "halow_huge_ic_nonos_driver" "lvgl" "esp-brookesia"
     )
 
 target_compile_options(
