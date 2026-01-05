@@ -22,8 +22,8 @@ extern "C"
 
 #include "../esp_brookesia_app/wifi_halow/ui/ui.h"
 
-// #define HALOW_DEFAULT_ROLE_AP
-#define HALOW_DEFAULT_ROLE_STA
+#define HALOW_DEFAULT_ROLE_AP
+// #define HALOW_DEFAULT_ROLE_STA
 
 #define SOFTWARE_SPI_FREQ_HZ 1000000
 #define SOFTWARE_SPI_DELAY_US 1000000 / SOFTWARE_SPI_FREQ_HZ
@@ -220,17 +220,81 @@ static void echo_task(void *arg)
     }
 }
 
-static void halow_detect_alive_tack(void *arg)
+void halow_detect_alive_tack()
 {
-    while (1)
-    {
+    // while (1)
+    // {
         if (hgic_sdspi_detect_alive(0) == -1)
         {
             printf("hgic_sdspi_detect_alive fail hgic_sdspi_init start\n");
             hgic_sdspi_init(0);
         }
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+        if(Interrupt_Flag == true)
+        {
+            auto buffer = std::make_unique<unsigned char[]>(1024);
+
+            size_t length = hgic_sdspi_read(0, buffer.get(), 1024, 0);
+
+            if (length != static_cast<size_t>(-1) && length > 0)
+            {
+                unsigned char *buf_p = buffer.get();
+                unsigned int length_2 = static_cast<unsigned int>(length);
+                static int recv_cnt = 0;
+                
+                if (hgic_raw_rx(&buf_p, &length_2) == HGIC_RAW_RX_TYPE_DATA)
+                {
+                    // printf("spi receive length: %d\n", length);
+                    printf(" ------------------- [%d] receive %d data ------------------- \n", recv_cnt++, length);
+
+                    printf("Destination address: %x-%x-%x-%x-%x-%x\n", buf_p[0], buf_p[1], buf_p[2],
+                                                                       buf_p[3], buf_p[4], buf_p[5]);
+                    printf("Device address     : %x-%x-%x-%x-%x-%x\n", buf_p[6], buf_p[7], buf_p[8],
+                                                                       buf_p[9], buf_p[10], buf_p[11]);
+                    printf("ETH type           : %x-%x\n", buf_p[12], buf_p[13]);
+
+                    printf("Date: ");
+                    for (uint32_t i = 14; i < length_2; i++)
+                    {
+                        printf("%c", buf_p[i]);
+                    }
+
+                    printf("\n");
+                }
+            }
+            Interrupt_Flag = false;
+        }
+        if (Tx_Ah_R900pnr_Spi_Bus->get_system_time_ms() > Cycle_Time)
+        {
+            // printf("test data send start\n");
+
+            // if (hgic_raw_test2((unsigned char *)"0123456789", 10) == -1)
+            // {
+            //     printf("hgic_raw_test2 fail\n");
+            // }
+#ifdef HALOW_DEFAULT_ROLE_STA 
+            uint8_t dest[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+            static int count = 10000;
+            std::string str = "T-Halow-P4" + std::to_string(count++);
+            printf("test data send: %s\n", str.c_str());
+            if(hgic_raw_send(dest, (unsigned char *)str.c_str(), str.length()) == -1)
+            {
+                printf("hgic_raw_send fail\n");
+            }
+            Cycle_Time = Tx_Ah_R900pnr_Spi_Bus->get_system_time_ms() + 1000;
+#else 
+            uint8_t dest[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+            static int count = 10000;
+            std::string str = "AP " + std::to_string(count++);
+            printf("test data send: %s\n", str.c_str());
+            if(hgic_raw_send(dest, (unsigned char *)str.c_str(), str.length()) == -1)
+            {
+                printf("hgic_raw_send fail\n");
+            }
+            Cycle_Time = Tx_Ah_R900pnr_Spi_Bus->get_system_time_ms() + 1000;
+#endif
+        }
+    //     vTaskDelay(pdMS_TO_TICKS(10));
+    // }
     
 }
 
@@ -273,7 +337,7 @@ void halow_init(void)
     
     vTaskDelay(pdMS_TO_TICKS(1000));
     xTaskCreate(echo_task, "uart_echo_task", 3072, NULL, 10, &halow_echo_task_handle);
-    xTaskCreate(halow_detect_alive_tack, "halow_detect_alive_tack", 1024, NULL, 10, NULL);
+    // xTaskCreate(halow_detect_alive_tack, "halow_detect_alive_tack", 4096, NULL, 10, NULL);
 
     halow_echo_suspend();
 }

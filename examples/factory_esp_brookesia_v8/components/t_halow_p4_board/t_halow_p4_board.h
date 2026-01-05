@@ -122,3 +122,4 @@ void halow_spi_test(void);
 void halow_echo_suspend(void);
 void halow_echo_resume(void);
 void halow_text_echo(void);
+void halow_detect_alive_tack();

@@ -15,6 +15,7 @@ idf_component_register(
         esp_mm 
         esp-brookesia
         t_halow_p4_board
+        halow_huge_ic_nonos_driver
 )
 
 target_compile_options(

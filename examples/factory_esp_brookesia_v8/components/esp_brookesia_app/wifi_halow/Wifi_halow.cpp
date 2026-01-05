@@ -9,7 +9,11 @@
 
 #include "ui/ui.h"
 #include "esp_brookesia_versions.h"
-
+extern "C"
+{
+#include "hgic_sdspi.h"
+#include "hgic_raw.h"
+}
 // #include "esp-bsp.h"
 
 using namespace std;
@@ -19,10 +23,16 @@ LV_IMG_DECLARE(img_wifi_halow);
 #define APP_NAME "WIFI Halow"
 
 #define LVGL_FLUSH_BUF 1200
+#define TEXT_SUM_MEX   1200
 
 static lv_timer_t *halow_timer = NULL;
-
+static uint32_t text_sum_len = 0;
+static size_t Cycle_Time = 0;
 TaskHandle_t halwo_echo_task111_handle = NULL;
+
+
+extern volatile bool Interrupt_Flag;
+
 
 void halow_timer_cb(lv_timer_t *t);
 
@@ -89,12 +99,102 @@ bool WIFI_halow::init()
     return true;
 }
 
+void halow_send_recv_loop(void)
+{
+    if (hgic_sdspi_detect_alive(0) == -1)
+        {
+            printf("hgic_sdspi_detect_alive fail hgic_sdspi_init start\n");
+            hgic_sdspi_init(0);
+        }
+        if(Interrupt_Flag == true)
+        {
+            auto buffer = std::make_unique<unsigned char[]>(1024);
+
+            size_t length = hgic_sdspi_read(0, buffer.get(), 1024, 0);
+
+            if (length != static_cast<size_t>(-1) && length > 0)
+            {
+                unsigned char *buf_p = buffer.get();
+                unsigned int length_2 = static_cast<unsigned int>(length);
+                static int recv_cnt = 0;
+
+                text_sum_len += length_2;
+                if(text_sum_len > TEXT_SUM_MEX) {
+                    text_sum_len = 0;
+                    lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, "");
+                }
+                
+                if (hgic_raw_rx(&buf_p, &length_2) == HGIC_RAW_RX_TYPE_DATA)
+                {
+                    // printf("spi receive length: %d\n", length);
+                    char buf[256];
+                    int ret = 0;
+                    // ret = lv_snprintf(buf, 256, " ------------------- [%d] receive %d data ------------------- \n", recv_cnt++, length);
+                    // lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, buf);
+
+                    // ret = lv_snprintf(buf+ret, 256, "Destination address: %x-%x-%x-%x-%x-%x\n", buf_p[0], buf_p[1], buf_p[2],
+                    //                                                    buf_p[3], buf_p[4], buf_p[5]);
+                    // lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, buf);
+                    
+                    // ret = lv_snprintf(buf+ret, 256, "Device address     : %x-%x-%x-%x-%x-%x\n", buf_p[6], buf_p[7], buf_p[8],
+                    //                                                    buf_p[9], buf_p[10], buf_p[11]);
+                    // lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, buf);
+                    
+                    // ret = lv_snprintf(buf+ret, 256, "ETH type           : %x-%x\n", buf_p[12], buf_p[13]);
+                    // lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, buf);
+
+                    // ret = lv_snprintf(buf+ret, 256, "Date: ");
+                    // lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, buf);
+
+                    for (uint32_t i = 14; i < length_2; i++)
+                    {
+                        printf("%c", buf_p[i]);
+                        buf[ret++] = buf_p[i];
+                    }
+                    buf[ret] = '\n';
+                    lv_textarea_add_text(ui_halowSetting_halowDebugTextArea, buf);
+                }
+            }
+            Interrupt_Flag = false;
+        }
+        if (esp_timer_get_time() / 1000 > Cycle_Time)
+        {
+            // printf("test data send start\n");
+
+            // if (hgic_raw_test2((unsigned char *)"0123456789", 10) == -1)
+            // {
+            //     printf("hgic_raw_test2 fail\n");
+            // }
+#ifdef HALOW_DEFAULT_ROLE_STA 
+            uint8_t dest[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+            static int count = 10000;
+            std::string str = "STA" + std::to_string(count++);
+            printf("test data send: %s\n", str.c_str());
+            if(hgic_raw_send(dest, (unsigned char *)str.c_str(), str.length()) == -1)
+            {
+                printf("hgic_raw_send fail\n");
+            }
+            Cycle_Time = esp_timer_get_time() / 1000 + 1000;
+#else 
+            uint8_t dest[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+            static int count = 10000;
+            std::string str = "AP " + std::to_string(count++);
+            printf("test data send: %s\n", str.c_str());
+            if(hgic_raw_send(dest, (unsigned char *)str.c_str(), str.length()) == -1)
+            {
+                printf("hgic_raw_send fail\n");
+            }
+            Cycle_Time = esp_timer_get_time() / 1000 + 3000;
+#endif
+        }
+}
+
 void halow_timer_cb(lv_timer_t *t)
 {
     size_t item_size;
     uint8_t *item;
     static char merge_buf[LVGL_FLUSH_BUF];
-    static uint32_t text_sun_len = 0;
+    static uint16_t cnt = 0;
     int total = 0;
 
     while ((item = (uint8_t *)xRingbufferReceiveUpTo(
@@ -110,14 +210,21 @@ void halow_timer_cb(lv_timer_t *t)
     }
 
     if (total > 0) {
-        text_sun_len += total;
-        if(text_sun_len > 1000) {
-            text_sun_len = 0;
+        text_sum_len += total;
+        if(text_sum_len > TEXT_SUM_MEX) {
+            text_sum_len = 0;
             lv_textarea_set_text(ui_halowSetting_halowDebugTextArea, "");
         }
         merge_buf[total] = '\0';
         lv_textarea_add_text(ui_halowSetting_halowDebugTextArea, merge_buf);
     }
+
+    if(cnt++ > 10) {
+        cnt = 0;
+        halow_send_recv_loop();
+    }
+
+    
 }
 
 // bool WIFI_halow::deinit()
