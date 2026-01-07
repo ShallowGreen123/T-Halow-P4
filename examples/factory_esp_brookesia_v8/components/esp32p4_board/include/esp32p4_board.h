@@ -24,8 +24,8 @@
  *  Kconfig
  **************************************************************************************************/
 #define CONFIG_BSP_DISPLAY_BRIGHTNESS_LEDC_CH 1
-#define CONFIG_BSP_LCD_COLOR_FORMAT_RGB888 0
-#define CONFIG_BSP_LCD_COLOR_FORMAT_RGB565 1
+// #define CONFIG_BSP_LCD_COLOR_FORMAT_RGB888 0
+// #define CONFIG_BSP_LCD_COLOR_FORMAT_RGB565 1
 #define CONFIG_BSP_I2C_NUM 1
 #define CONFIG_BSP_I2C_CLK_SPEED_HZ 400000
 
@@ -161,6 +161,8 @@ int bsp_touchpad_read_point(int32_t *last_x, int32_t *last_y, int point_num);
 lv_display_t *bsp_display_lcd_init(const bsp_display_cfg_t *cfg);
 
 lv_indev_t *bsp_display_indev_init(void);
+
+i2c_master_bus_handle_t bsp_i2c_get_handle(void);
 
 #endif // BSP_CONFIG_NO_GRAPHIC_LIB == 0
 

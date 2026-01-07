@@ -376,4 +376,9 @@ void bsp_display_unlock(void)
     lvgl_port_unlock();
 }
 
+i2c_master_bus_handle_t bsp_i2c_get_handle(void)
+{
+    return i2c_bus_handle;
+}
+
 #endif // (BSP_CONFIG_NO_GRAPHIC_LIB == 0)

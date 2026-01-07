@@ -14,7 +14,12 @@ idf_component_register(
         esp_driver_jpeg 
         esp_mm 
         esp-brookesia
+        esp_video
+        pedestrian_detect
+        human_face_detect
         t_halow_p4_board
+        esp32p4_board
+        esp_lcd_touch_gt9895
         halow_huge_ic_nonos_driver
 )
 

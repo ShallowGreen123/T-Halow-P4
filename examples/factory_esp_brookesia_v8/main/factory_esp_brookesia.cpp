@@ -111,7 +111,7 @@ extern "C" void app_main(void)
     ESP_BROOKESIA_CHECK_NULL_EXIT(app_wifi_halow, "Create app WIFI_Halow conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_wifi_halow) >= 0), "Install app WIFI_Halow failed");
     /* Install Camera apps */
-    Camera *app_camera = new Camera(false, true);
+    Camera *app_camera = new Camera(568, 1232);
     ESP_BROOKESIA_CHECK_NULL_EXIT(app_camera, "Create app Camera conf failed");
     ESP_BROOKESIA_CHECK_FALSE_EXIT((phone->installApp(app_camera) >= 0), "Install app Camera failed");
     /* Install setting apps */
