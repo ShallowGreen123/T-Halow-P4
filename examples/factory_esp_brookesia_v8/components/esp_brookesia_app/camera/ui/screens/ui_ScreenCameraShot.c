@@ -8,6 +8,7 @@
 void ui_ScreenCameraShot_screen_init(void)
 {
 ui_ScreenCameraShot = lv_obj_create(NULL);
+lv_obj_set_size(ui_ScreenCameraShot, lv_pct(100), lv_pct(100));
 lv_obj_clear_flag( ui_ScreenCameraShot, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 lv_obj_set_flex_flow(ui_ScreenCameraShot,LV_FLEX_FLOW_COLUMN);
 lv_obj_set_flex_align(ui_ScreenCameraShot, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
@@ -40,7 +41,7 @@ lv_obj_set_style_text_opa(ui_LabelCameraShotTitle, 255, LV_PART_MAIN| LV_STATE_D
 lv_obj_set_style_text_font(ui_LabelCameraShotTitle, &lv_font_montserrat_38, LV_PART_MAIN| LV_STATE_DEFAULT);
 
 ui_ImageCameraShotImage = lv_canvas_create(ui_ScreenCameraShot);
-lv_obj_set_height( ui_ImageCameraShotImage, 1232);
+lv_obj_set_height( ui_ImageCameraShotImage, 720);
 lv_obj_set_width( ui_ImageCameraShotImage, 568);
 lv_obj_set_align( ui_ImageCameraShotImage, LV_ALIGN_CENTER );
 lv_obj_add_flag( ui_ImageCameraShotImage, LV_OBJ_FLAG_ADV_HITTEST );   /// Flags

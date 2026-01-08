@@ -36,7 +36,7 @@
 
 #define CAMERA_INIT_TASK_WAIT_MS            (1000)
 #define DETECT_NUM_MAX                      (10)
-#define FPS_PRINT                           (1)
+#define FPS_PRINT                           (0)
 
 using namespace std;
 
@@ -95,7 +95,7 @@ static void camera_video_frame_operation(uint8_t *camera_buf, uint8_t camera_buf
 static bool ppa_trans_done_cb(ppa_client_handle_t ppa_client, ppa_event_data_t *event_data, void *user_data);
 
 Camera::Camera(uint16_t hor_res, uint16_t ver_res):
-    ESP_Brookesia_PhoneApp("Camera", &img_camera, false),  // auto_resize_visual_area
+    ESP_Brookesia_PhoneApp("Camera", &img_camera, false, false, true),  // auto_resize_visual_area
     _screen_index(SCREEN_CAMERA_SHOT),
     _hor_res(hor_res),
     _ver_res(ver_res),
@@ -271,6 +271,16 @@ bool Camera::init(void)
     xEventGroupClearBits(camera_event_group, CAMERA_EVENT_PED_DETECT);
     xEventGroupClearBits(camera_event_group, CAMERA_EVENT_HUMAN_DETECT);
 
+     ppa_client_config_t srm_config =  {
+        .oper_type = PPA_OPERATION_SRM,
+    };
+    ESP_ERROR_CHECK(ppa_register_client(&srm_config, &ppa_client_srm_handle));
+
+    // ppa_event_callbacks_t cbs = {
+    //     .on_trans_done = ppa_trans_done_cb,
+    // };
+    // ppa_client_register_event_callbacks(ppa_client_srm_handle, &cbs);
+
     i2c_master_bus_handle_t i2c_bus_handle = bsp_i2c_get_handle();
     esp_err_t ret = app_video_main(i2c_bus_handle);
     if (ret != ESP_OK) {
@@ -314,19 +324,7 @@ bool Camera::init(void)
 
     size_t detect_buf_size = ALIGN_UP_BY(_hor_res * _ver_res * BSP_LCD_BITS_PER_PIXEL / 8, data_cache_line_size);
 
-    ppa_client_config_t srm_config =  {
-        .oper_type = PPA_OPERATION_SRM,
-    };
-    ESP_ERROR_CHECK(ppa_register_client(&srm_config, &ppa_client_srm_handle));
-
-    ppa_event_callbacks_t cbs = {
-        .on_trans_done = ppa_trans_done_cb,
-    };
-    ppa_client_register_event_callbacks(ppa_client_srm_handle, &cbs);
-
-    // ESP_LOGI(TAG, "buffer_size=%d", detect_buf_size);
-    // uint16_t* elements = static_cast<uint16_t*>(heap_caps_aligned_calloc(1, 1, detect_buf_size, MALLOC_CAP_SPIRAM));
-    // ESP_LOGI(TAG, "elements=%p", elements);
+    
     camera_pipeline_cfg_t PPA_feed_cfg = {
         .elem_num = 4,
         .elements = NULL,
@@ -532,9 +530,80 @@ static void camera_video_frame_operation(uint8_t *camera_buf, uint8_t camera_buf
     // Update display if not in delete state
     if (!(current_bits & CAMERA_EVENT_DELETE) && bsp_display_lock(100)) {
         if (ui_ImageCameraShotImage) {
-            lv_canvas_set_buffer(ui_ImageCameraShotImage, camera_buf, 
-                               camera_buf_hes, camera_buf_ves, 
+            // lv_canvas_set_buffer(ui_ImageCameraShotImage, camera_buf, 
+            //                    camera_buf_hes, camera_buf_ves, 
+            //                    LV_IMG_CF_TRUE_COLOR);
+
+            // printf("is_detect_mode=%d, h=%d, w=%d,\n", is_detect_mode, camera_buf_hes, camera_buf_ves);
+
+            uint32_t input_img_block_width = (camera_buf_hes - BSP_LCD_H_RES) / 2;
+            uint32_t input_img_block_height = 0;
+            uint32_t input_img_width = BSP_LCD_H_RES;
+            uint32_t input_img_height = camera_buf_ves;
+
+            uint32_t output_img_width = input_img_width;
+            uint32_t output_img_height = input_img_height;
+
+            printf("is_detect_mode=%d, h=%d, w=%d, ih=%d, iw=%d,\n", is_detect_mode, camera_buf_hes, camera_buf_ves, output_img_width, output_img_height);
+
+            size_t output_buffer_size = output_img_width * output_img_height * (BSP_LCD_BITS_PER_PIXEL / 8);
+            uint8_t *output_buffer = (uint8_t *)heap_caps_malloc(output_buffer_size, MALLOC_CAP_DMA | MALLOC_CAP_SPIRAM);
+            if (output_buffer == NULL)
+            {
+                printf("heap_caps_malloc fail\n");
+                return;
+            }
+
+            ppa_srm_oper_config_t srm_config =
+            {
+                .in =
+                    {
+                        .buffer = camera_buf,
+                        .pic_w = camera_buf_hes,
+                        .pic_h = camera_buf_ves,
+                        .block_w = input_img_width,
+                        .block_h = input_img_height,
+                        .block_offset_x = input_img_block_width,
+                        .block_offset_y = input_img_block_height,
+                        .srm_cm = ppa_srm_color_mode_t::PPA_SRM_COLOR_MODE_RGB565,
+                    },
+
+                .out =
+                    {
+                        .buffer = output_buffer,
+                        .buffer_size = ALIGN_UP_BY(output_buffer_size, data_cache_line_size),
+                        .pic_w = output_img_width,
+                        .pic_h = output_img_height,
+                        .block_offset_x = 0,
+                        .block_offset_y = 0,
+                        .srm_cm = ppa_srm_color_mode_t::PPA_SRM_COLOR_MODE_RGB565,
+                    },
+
+                .rotation_angle = PPA_SRM_ROTATION_ANGLE_0,
+                .scale_x = 1,
+                .scale_y = 1,
+                .mirror_x = false,
+                .mirror_y = false,
+                .rgb_swap = false,
+                .byte_swap = false,
+                .mode = PPA_TRANS_MODE_BLOCKING,
+            };
+
+            esp_err_t assert = ppa_do_scale_rotate_mirror(ppa_client_srm_handle, &srm_config);
+            if (assert != ESP_OK)
+            {
+                printf("ppa_do_scale_rotate_mirror fail (error code: %#X)\n", assert);
+                heap_caps_free(output_buffer);
+                return;
+            }
+
+            lv_canvas_set_buffer(ui_ImageCameraShotImage, output_buffer, 
+                               output_img_width, output_img_height, 
                                LV_IMG_CF_TRUE_COLOR);
+
+            
+
+            heap_caps_free(output_buffer);
         }
         lv_refr_now(NULL);
         bsp_display_unlock();

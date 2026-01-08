@@ -17,6 +17,8 @@
 #include "esp-bsp.h"
 #include "display.h"
 #include "t_halow_p4_board.h"
+#include "cpp_bus_driver_library.h"
+#include "esp_ldo_regulator.h"
 // esp_brookesia
 #include "esp_brookesia.hpp"
 #include "esp_brookesia_phone_568_1232_stylesheet.h"
@@ -32,6 +34,29 @@
 static char * TAG = "app_main";
 
 static void on_clock_update_timer_cb(struct _lv_timer_t *t);
+
+auto IIC_Bus_1 = std::make_shared<Cpp_Bus_Driver::Hardware_Iic_1>(SGM38121_SDA, SGM38121_SCL, I2C_NUM_0);
+auto SGM38121 = std::make_unique<Cpp_Bus_Driver::Sgm38121>(IIC_Bus_1, SGM38121_IIC_ADDRESS, DEFAULT_CPP_BUS_DRIVER_VALUE);
+
+extern std::shared_ptr<Cpp_Bus_Driver::Hardware_Iic_1> IIC_Bus_1;
+
+
+bool Init_Ldo_Channel_Power(uint8_t chan_id, uint32_t voltage_mv)
+{
+    esp_ldo_channel_handle_t ldo_channel_handle = NULL;
+    esp_ldo_channel_config_t ldo_channel_config =
+        {
+            .chan_id = static_cast<int>(chan_id),
+            .voltage_mv = static_cast<int>(voltage_mv),
+        };
+    if (esp_ldo_acquire_channel(&ldo_channel_config, &ldo_channel_handle) != ESP_OK)
+    {
+        printf("esp_ldo_acquire_channel %d fail\n", chan_id);
+        return false;
+    }
+
+    return true;
+}
 
 extern "C" void app_main(void)
 {
@@ -56,19 +81,27 @@ extern "C" void app_main(void)
 
     // halow_spi_test();
 
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    // SGM38121->begin();
+
+    // SGM38121->set_output_voltage(Cpp_Bus_Driver::Sgm38121::Channel::DVDD_1, 1500);
+    // SGM38121->set_output_voltage(Cpp_Bus_Driver::Sgm38121::Channel::AVDD_1, 1700);
+    // SGM38121->set_output_voltage(Cpp_Bus_Driver::Sgm38121::Channel::AVDD_2, 3000);
+    // SGM38121->set_channel_status(Cpp_Bus_Driver::Sgm38121::Channel::DVDD_1, Cpp_Bus_Driver::Sgm38121::Status::ON);
+    // SGM38121->set_channel_status(Cpp_Bus_Driver::Sgm38121::Channel::AVDD_1, Cpp_Bus_Driver::Sgm38121::Status::ON);
+    // SGM38121->set_channel_status(Cpp_Bus_Driver::Sgm38121::Channel::AVDD_2, Cpp_Bus_Driver::Sgm38121::Status::ON);
+
+    // Init_Ldo_Channel_Power(3, 1830);
+
+    vTaskDelay(pdMS_TO_TICKS(100));
+
     bsp_display_lock(0);
 
     /* LVGL demo */
     // lv_demo_benchmark();
     // lv_demo_music();
     // lv_demo_stress();
-    
-
-    // 创建一个简单的 LVGL 界面
-    // lv_obj_t *scr = lv_scr_act();
-    // lv_obj_t *label = lv_label_create(scr);
-    // lv_label_set_text(label, "Hello, LVGL with ESP32!");
-    // lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
     /* Create a phone object */
     ESP_Brookesia_Phone *phone = new ESP_Brookesia_Phone(disp);

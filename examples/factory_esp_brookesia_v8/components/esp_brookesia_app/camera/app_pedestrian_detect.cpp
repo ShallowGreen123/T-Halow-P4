@@ -13,8 +13,8 @@
 
 static PedestrianDetect *detect = NULL;
 
-#define WIDTH  1280
-#define HEIGHT 720
+#define WIDTH  568
+#define HEIGHT 1232
 
 std::list<dl::detect::result_t> app_pedestrian_detect(uint16_t *frame, int width, int height)
 {

@@ -42,6 +42,11 @@
 #define I2C_SDA 7
 #define I2C_SCL 8
 
+// SGM38121
+#define SGM38121_IIC_ADDRESS 0x28
+#define SGM38121_SDA I2C_SDA
+#define SGM38121_SCL I2C_SCL
+
 // spi
 #define SPI_1_SCLK 43
 #define SPI_1_MOSI 44
